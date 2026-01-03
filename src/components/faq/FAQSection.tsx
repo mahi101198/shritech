@@ -1,0 +1,451 @@
+'use client'
+
+import React, { useState } from 'react'
+import {
+  ChevronDown,
+  ChevronUp,
+  MessageCircle,
+  Code,
+  Zap,
+  Shield,
+  DollarSign,
+  Clock,
+  Users,
+  Award,
+  LucideIcon,
+  Phone,
+  Mail
+} from 'lucide-react'
+import { contactInfo, generateWhatsAppLink, generateEmailLink, generatePhoneLink } from '@/config/contactInfo'
+import { Button } from '@/components/ui/button'
+
+interface FAQItem {
+  question: string
+  answer: string
+  category: string
+  icon: LucideIcon
+}
+
+interface Category {
+  name: string
+  icon: LucideIcon
+}
+
+// Data remains the same, just stripped of color properties in Category if they existed and were unused, 
+// but existing code used them for selection state. I'll stick to primary color for selection.
+const faqData: FAQItem[] = [
+  {
+    question: 'What AI/ML services do you offer?',
+    answer:
+      'We offer comprehensive AI/ML solutions including intelligent chatbots with natural language processing, automated document processing with 95% accuracy, computer vision applications for quality control and inspection, predictive analytics for business forecasting, custom machine learning models for specific industry needs, and conversational AI for customer service automation. Our services are tailored for businesses looking to automate processes, improve efficiency, and gain competitive advantages through cutting-edge AI technology.',
+    category: 'AI/ML Services',
+    icon: Code,
+  },
+  {
+    question: 'How accurate are your AI solutions?',
+    answer:
+      'Our AI solutions achieve industry-leading accuracy rates: 95%+ for document processing and data extraction, 96% for computer vision quality control applications, 90%+ for predictive analytics models, and 85-90% for conversational AI chatbots. We continuously monitor and improve accuracy through machine learning model retraining, data quality optimization, and performance analytics. Our accuracy rates are validated through extensive testing and real-world deployment across various industries.',
+    category: 'AI/ML Services',
+    icon: Award,
+  },
+  {
+    question: 'What technologies do you use for AI development?',
+    answer:
+      'We use cutting-edge technologies including Python for core development, FastAPI for high-performance APIs, TensorFlow and PyTorch for deep learning models, OpenAI GPT models for natural language processing, spaCy and NLTK for advanced NLP tasks, OpenCV and TensorFlow Lite for computer vision applications, Redis for caching and session management, PostgreSQL for data storage, and Docker for containerization. Our tech stack is carefully chosen based on project requirements, scalability needs, and performance optimization for each specific use case.',
+    category: 'AI/ML Services',
+    icon: Zap,
+  },
+  {
+    question: 'What is WhatsApp Business API and how can it help my business?',
+    answer:
+      "WhatsApp Business API allows businesses to send automated messages, handle customer inquiries, and manage orders at scale. It can reduce customer service costs by 70%, provide 24/7 support, and improve customer engagement through the world's most popular messaging platform.",
+    category: 'WhatsApp Business API',
+    icon: MessageCircle,
+  },
+  {
+    question: 'How long does WhatsApp Business API implementation take?',
+    answer:
+      'Implementation typically takes 2-4 weeks depending on complexity. This includes account verification, integration setup, chatbot development, testing, and staff training. We provide full support throughout the process and ensure smooth deployment.',
+    category: 'WhatsApp Business API',
+    icon: Clock,
+  },
+  {
+    question: 'Is WhatsApp Business API suitable for small businesses?',
+    answer:
+      'Absolutely! WhatsApp Business API is perfect for businesses of all sizes. Small businesses can start with basic automation and scale up as they grow. We offer cost-effective solutions starting from ₹25,000 with monthly costs as low as ₹5,000.',
+    category: 'WhatsApp Business API',
+    icon: Users,
+  },
+  {
+    question: 'What are your pricing models?',
+    answer:
+      'We offer flexible pricing models: project-based pricing for custom solutions, monthly subscription for ongoing services, and pay-per-use for API-based solutions. Initial investments range from ₹25,000 to ₹2,00,000 depending on complexity. Contact us for a custom quote.',
+    category: 'Pricing & Costs',
+    icon: DollarSign,
+  },
+  {
+    question: 'What ROI can I expect from AI automation?',
+    answer:
+      'Our clients typically see 200-400% ROI within 6-12 months. Benefits include 70% reduction in customer service costs, 90% faster processing times, 95%+ accuracy improvements, and increased revenue through better customer experience. Most projects pay for themselves within 3-6 months.',
+    category: 'Pricing & Costs',
+    icon: Award,
+  },
+  {
+    question: 'Do you offer payment plans or financing?',
+    answer:
+      'Yes, we offer flexible payment plans including monthly installments, milestone-based payments, and deferred payment options. We also help clients explore government schemes and financing options for digital transformation projects.',
+    category: 'Pricing & Costs',
+    icon: DollarSign,
+  },
+  {
+    question: 'How do you ensure data security and privacy?',
+    answer:
+      'We implement enterprise-grade security measures including end-to-end encryption, secure API endpoints, data anonymization, and compliance with Indian data protection regulations. All client data is isolated and protected with strict access controls.',
+    category: 'Implementation & Support',
+    icon: Shield,
+  },
+  {
+    question: 'Do you provide ongoing support and maintenance?',
+    answer:
+      'Yes, we provide comprehensive ongoing support including 24/7 system monitoring, regular updates, performance optimization, bug fixes, and feature enhancements. Our support ensures your AI solutions continue to deliver optimal results.',
+    category: 'Implementation & Support',
+    icon: Users,
+  },
+  {
+    question: 'Can you integrate with our existing systems?',
+    answer:
+      'Absolutely! We specialize in seamless integration with existing business systems including CRM platforms, databases, payment gateways, inventory management, and other business tools. We ensure minimal disruption to your current operations.',
+    category: 'Implementation & Support',
+    icon: Code,
+  },
+  {
+    question: 'What if I need custom features or modifications?',
+    answer:
+      'We offer full customization services. Our team can develop custom features, modify existing solutions, and create tailored AI models for your specific business requirements. We work closely with you to understand your needs and deliver exactly what you need.',
+    category: 'Technical Questions',
+    icon: Code,
+  },
+  {
+    question: 'How do you handle updates and new features?',
+    answer:
+      'We regularly update our solutions with the latest AI/ML advancements and new features. Updates are deployed seamlessly with zero downtime. We also provide training sessions to help your team utilize new features effectively.',
+    category: 'Technical Questions',
+    icon: Zap,
+  },
+  {
+    question: 'What happens if there are technical issues?',
+    answer:
+      'We provide 24/7 technical support with guaranteed response times. Our team monitors systems proactively and resolves issues quickly. We also offer backup solutions and disaster recovery plans to ensure business continuity.',
+    category: 'Technical Questions',
+    icon: Shield,
+  },
+  {
+    question: 'Which industries do you specialize in for AI/ML solutions?',
+    answer:
+      'We specialize in e-commerce & retail, restaurants & food delivery, healthcare & medical, legal services, real estate, and manufacturing industries. Our solutions are tailored to address specific industry challenges and regulatory requirements.',
+    category: 'AI/ML Services',
+    icon: Code,
+  },
+  {
+    question: 'Can AI chatbots handle multiple languages?',
+    answer:
+      'Yes, our AI chatbots support multiple languages including Hindi, English, and regional Indian languages. They can automatically detect the customer\'s preferred language and respond accordingly, making them perfect for diverse Indian markets.',
+    category: 'AI/ML Services',
+    icon: MessageCircle,
+  },
+  {
+    question: 'How quickly can you develop a custom AI solution?',
+    answer:
+      'Development timelines vary based on complexity: Simple chatbots (2-3 weeks), Document processing systems (4-6 weeks), Computer vision applications (6-8 weeks), Complex ML models (8-12 weeks). We provide detailed project timelines during consultation.',
+    category: 'Implementation & Support',
+    icon: Clock,
+  },
+  {
+    question: 'Do you provide training for our staff on AI tools?',
+    answer:
+      'Absolutely! We provide comprehensive training programs including hands-on workshops, video tutorials, documentation, and ongoing support. We ensure your team is fully equipped to use and maintain the AI solutions effectively.',
+    category: 'Implementation & Support',
+    icon: Users,
+  },
+  {
+    question: 'What makes your WhatsApp Business API different from others?',
+    answer:
+      'Our WhatsApp Business API solutions include advanced AI chatbots, seamless CRM integration, automated order processing, multilingual support, and detailed analytics. We focus on automation that actually reduces workload and improves customer satisfaction.',
+    category: 'WhatsApp Business API',
+    icon: Award,
+  },
+  {
+    question: 'Can WhatsApp Business API handle e-commerce transactions?',
+    answer:
+      'Yes! Our WhatsApp Business API can handle complete e-commerce workflows including product catalogs, order placement, payment processing, order tracking, and customer support. It\'s like having a complete online store within WhatsApp.',
+    category: 'WhatsApp Business API',
+    icon: DollarSign,
+  },
+  {
+    question: 'What is the minimum commitment period for your services?',
+    answer:
+      'For project-based work, there\'s no minimum commitment. For ongoing services like chatbot maintenance or WhatsApp API management, we recommend a 6-month minimum to see optimal results, but we offer flexible monthly plans as well.',
+    category: 'Pricing & Costs',
+    icon: Clock,
+  },
+  {
+    question: 'Do you offer free trials or demos?',
+    answer:
+      'Yes! We offer free consultations, live demos of our solutions, and proof-of-concept development for qualified prospects. We believe in showing the value before you invest, so you can see exactly how our AI solutions will benefit your business.',
+    category: 'Pricing & Costs',
+    icon: Award,
+  },
+  {
+    question: 'How do you measure the success of AI implementations?',
+    answer:
+      'We track key metrics including accuracy rates, processing time improvements, cost savings, customer satisfaction scores, and ROI. We provide detailed monthly reports and dashboards so you can see the tangible impact of our AI solutions on your business.',
+    category: 'Technical Questions',
+    icon: Award,
+  },
+  {
+    question: 'What backup and disaster recovery options do you provide?',
+    answer:
+      'We implement comprehensive backup strategies including automated daily backups, cloud redundancy, failover systems, and disaster recovery plans. Your AI systems are protected against data loss with 99.9% uptime guarantee and rapid recovery procedures.',
+    category: 'Technical Questions',
+    icon: Shield,
+  },
+  {
+    question: 'How do you handle data privacy and GDPR compliance?',
+    answer:
+      'We implement strict data privacy measures including data anonymization, encryption at rest and in transit, role-based access controls, and compliance with GDPR, Indian data protection regulations, and industry-specific privacy requirements. We conduct regular security audits, provide data processing agreements, and ensure all AI models are trained on anonymized data while maintaining performance accuracy.',
+    category: 'Implementation & Support',
+    icon: Shield,
+  },
+  {
+    question: 'Can your AI solutions integrate with existing ERP and CRM systems?',
+    answer:
+      'Yes, we specialize in seamless integration with popular ERP systems like SAP, Oracle, and Microsoft Dynamics, as well as CRM platforms including Salesforce, HubSpot, and Zoho. Our AI solutions can extract data, automate workflows, and provide intelligent insights within your existing business infrastructure without disrupting current operations.',
+    category: 'Implementation & Support',
+    icon: Code,
+  },
+  {
+    question: 'What is the typical ROI timeline for AI implementation?',
+    answer:
+      'Most clients see positive ROI within 3-6 months of implementation. Document processing solutions typically show 60-80% cost savings within 2-3 months. Chatbots reduce customer service costs by 70% within the first month. Computer vision quality control shows 40-60% defect reduction within 4-6 weeks. We provide detailed ROI tracking and monthly performance reports.',
+    category: 'Pricing & Costs',
+    icon: Award,
+  },
+  {
+    question: 'How do you ensure AI models remain accurate over time?',
+    answer:
+      'We implement continuous learning systems that monitor model performance, retrain models with new data, and adapt to changing business conditions. Our AI models include drift detection, automated retraining pipelines, and performance monitoring dashboards. We also provide regular model updates and optimization to maintain peak accuracy and relevance.',
+    category: 'Technical Questions',
+    icon: Zap,
+  },
+  {
+    question: 'What industries have you successfully implemented AI solutions for?',
+    answer:
+      'We have successfully implemented AI solutions across manufacturing (quality control, predictive maintenance), healthcare (diagnostic assistance, patient data processing), retail (inventory optimization, customer behavior analysis), legal services (document review, contract analysis), real estate (property valuation, market analysis), and e-commerce (personalization, fraud detection). Each solution is customized to industry-specific requirements and regulatory compliance.',
+    category: 'AI/ML Services',
+    icon: Code,
+  },
+  {
+    question: 'How do you handle multilingual support in AI chatbots?',
+    answer:
+      'Our AI chatbots support multiple languages including Hindi, English, Gujarati, Marathi, Tamil, Telugu, and other regional Indian languages. They use advanced NLP models for language detection, translation, and context-aware responses. The chatbots can seamlessly switch between languages based on user preference and maintain conversation context across language changes.',
+    category: 'AI/ML Services',
+    icon: MessageCircle,
+  },
+  {
+    question: 'What security measures do you implement for AI systems?',
+    answer:
+      'We implement enterprise-grade security including end-to-end encryption, secure API authentication, data anonymization, regular security audits, penetration testing, and compliance with international security standards. Our AI systems include intrusion detection, anomaly monitoring, and secure model deployment with version control and rollback capabilities.',
+    category: 'Implementation & Support',
+    icon: Shield,
+  },
+  {
+    question: 'Can you customize AI solutions for specific business processes?',
+    answer:
+      'Absolutely! We specialize in custom AI development tailored to your specific business processes, workflows, and industry requirements. Our team works closely with you to understand your unique challenges, design custom AI models, integrate with existing systems, and provide training for your team. We ensure the solution perfectly fits your business needs.',
+    category: 'Technical Questions',
+    icon: Code,
+  },
+  {
+    question: 'What support and maintenance services do you provide?',
+    answer:
+      'We provide comprehensive support including 24/7 system monitoring, regular maintenance updates, performance optimization, bug fixes, feature enhancements, and technical support. Our maintenance packages include proactive monitoring, automated backups, security updates, and dedicated support channels. We also offer training programs and documentation updates.',
+    category: 'Implementation & Support',
+    icon: Users,
+  },
+]
+
+const categories: Category[] = [
+  { name: 'AI/ML Services', icon: Code },
+  { name: 'WhatsApp Business API', icon: MessageCircle },
+  { name: 'Pricing & Costs', icon: DollarSign },
+  { name: 'Implementation & Support', icon: Users },
+  { name: 'Technical Questions', icon: Zap },
+]
+
+function FAQCard({
+  item,
+  isOpen,
+  toggleOpen,
+}: {
+  item: FAQItem
+  isOpen: boolean
+  toggleOpen: () => void
+}) {
+  const Icon = item.icon
+
+  return (
+    <div className="bg-card border border-border rounded-xl mb-4 overflow-hidden transition-all duration-200">
+      <button
+        type="button"
+        onClick={toggleOpen}
+        className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-muted/50 transition-colors"
+      >
+        <div className="flex items-center">
+          <div className={`p-2 rounded-lg mr-4 ${isOpen ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+            <Icon className="w-5 h-5" />
+          </div>
+          <span className="font-semibold text-foreground text-lg">
+            {item.question}
+          </span>
+        </div>
+        {isOpen ? (
+          <ChevronUp className="w-5 h-5 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-muted-foreground" />
+        )}
+      </button>
+      {isOpen && (
+        <div className="px-6 pb-6 pl-[4.5rem]">
+          <p className="text-muted-foreground leading-relaxed">
+            {item.answer}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function FAQSection() {
+  const [openItems, setOpenItems] = useState<string[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>('All')
+
+  const toggleItem = (question: string) => {
+    setOpenItems((prev) =>
+      prev.includes(question)
+        ? prev.filter((q) => q !== question)
+        : [...prev, question]
+    )
+  }
+
+  const filteredFAQs =
+    selectedCategory === 'All'
+      ? faqData
+      : faqData.filter((item) => item.category === selectedCategory)
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Category Filter */}
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold text-foreground mb-8 text-center sm:text-left">
+          Browse by Category
+        </h2>
+        <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+          <Button
+            type="button"
+            variant={selectedCategory === 'All' ? 'default' : 'outline'}
+            onClick={() => setSelectedCategory('All')}
+            className={`rounded-full ${selectedCategory === 'All' ? '' : 'hover:bg-primary/10 hover:text-primary border-muted-foreground/30'}`}
+          >
+            All Questions
+          </Button>
+          {categories.map((category) => {
+            const CategoryIcon = category.icon
+            const isSelected = selectedCategory === category.name
+            return (
+              <Button
+                key={category.name}
+                type="button"
+                variant={isSelected ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(category.name)}
+                className={`rounded-full ${isSelected ? '' : 'hover:bg-primary/10 hover:text-primary border-muted-foreground/30'}`}
+              >
+                <CategoryIcon className="w-4 h-4 mr-2" />
+                {category.name}
+              </Button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* FAQ Items */}
+      <div className="space-y-4 mb-20">
+        {filteredFAQs.map((item) => (
+          <FAQCard
+            key={item.question}
+            item={item}
+            isOpen={openItems.includes(item.question)}
+            toggleOpen={() => toggleItem(item.question)}
+          />
+        ))}
+      </div>
+
+      {/* Contact CTA */}
+      <div className="bg-primary/5 border border-primary/20 rounded-2xl p-12 text-center">
+        <h3 className="text-2xl font-bold text-foreground mb-4">Still Have Questions?</h3>
+        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+          Can&apos;t find the answer you&apos;re looking for? Our team is available 24/7 to help you find the perfect solution for your business.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            asChild
+            size="lg"
+            className="bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
+          >
+            <a
+              href={generateWhatsAppLink(contactInfo.whatsappMessages.faq)}
+              title="Ask your question on WhatsApp"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle className="mr-2 w-5 h-5" />
+              WhatsApp Us
+            </a>
+          </Button>
+
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="border-primary text-primary hover:bg-primary/10"
+          >
+            <a
+              href={generateEmailLink(
+                'FAQ Question - Shriram Tech Solutions',
+                "Hi, I have a question that wasn't answered in your FAQ."
+              )}
+              title="Email us your question"
+            >
+              <Mail className="mr-2 w-5 h-5" />
+              Email Us
+            </a>
+          </Button>
+
+          <Button
+            asChild
+            size="lg"
+            variant="ghost"
+            className="text-foreground hover:bg-muted"
+          >
+            <a
+              href={generatePhoneLink()}
+              title={`Call ${contactInfo.phone}`}
+            >
+              <Phone className="mr-2 w-5 h-5" />
+              Call Support
+            </a>
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
