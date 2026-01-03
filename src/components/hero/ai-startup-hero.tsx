@@ -6,7 +6,7 @@ import { Bot, Sparkles, ArrowRight, CheckCircle2, Zap, Brain, FileText } from 'l
 
 import ServiceCard from '@/components/ui/service-card';
 import AuroraBackground from '@/components/ui/aurora-background';
-import FloatingOrb from '@/components/ui/floating-orb';
+import { FloatingOrb } from '@/components/ui/floating-orb';
 
 const AIStartupHero: React.FC = () => {
     const services = [
