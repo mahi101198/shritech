@@ -35,11 +35,17 @@ export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const services = [
+    'AI Agents',
+    'Chatbots',
+    'NLP & RAG',
+    'OCR Doc Extraction',
+    'Website Development',
+    'Mobile Apps',
+    'Machine Learning',
+    'Model Training',
+    'MCP Servers',
+    'Workflow Automation',
     'WhatsApp Business API',
-    'AI Chatbots',
-    'Custom Web Development',
-    'E-commerce Solutions',
-    'Digital Marketing',
     'Consulting',
     'Other'
   ];
@@ -82,8 +88,21 @@ export default function ContactForm() {
     setSubmitStatus('idle');
 
     try {
-      // Simulate API call - replace with actual submission logic
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Submit to API
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('API Error Response:', data);
+        throw new Error(data.error || 'Failed to submit form');
+      }
 
       // Success
       setSubmitStatus('success');
@@ -102,7 +121,9 @@ export default function ContactForm() {
         successMessage?.focus();
       }, 100);
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+      console.error('Error message:', error.message);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

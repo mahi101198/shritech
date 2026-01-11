@@ -41,8 +41,8 @@ export default function Footer() {
   ];
 
   const contactDetails = [
-    { icon: Phone, text: contact.phone, href: generatePhoneLink() },
-    { icon: Mail, text: contact.email, href: generateEmailLink() },
+    { icon: Phone, text: '+91-8890537686', href: 'tel:+918890537686' },
+    { icon: Mail, text: 'mahi@shritech.digital', href: 'mailto:mahi@shritech.digital' },
     { icon: MapPin, text: contact.location },
     { icon: Clock, text: contact.availability }
   ];
@@ -157,7 +157,7 @@ export default function Footer() {
                 &copy; 2025 Shriram Tech Solutions. All rights reserved.
               </p>
               <p className="text-xs mt-1 text-muted-foreground/60">
-                Built with ❤️ using Next.js, TypeScript & Tailwind CSS
+                Made by Shriram Tech
               </p>
             </div>
             <div className="flex items-center space-x-6 text-muted-foreground">
