@@ -5,6 +5,8 @@ import { AnimatedNavbar } from './AnimatedNavbar';
 import { DotPatternBackground } from '@/components/ui/dot-pattern-background';
 import Footer from './Footer';
 import ErrorBoundary from '../common/ErrorBoundary';
+import { useContactModal } from '@/contexts/ContactModalContext';
+import ContactFormModal from '@/components/contact/ContactFormModal';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,6 +15,8 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { isOpen, closeModal } = useContactModal();
+
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('section[id]');
@@ -42,6 +46,9 @@ export default function Layout({ children }: LayoutProps) {
         <AnimatedNavbar />
         <main>{children}</main>
         <Footer />
+        
+        {/* Global Contact Form Modal */}
+        <ContactFormModal isOpen={isOpen} onClose={closeModal} />
       </div>
     </ErrorBoundary>
   );

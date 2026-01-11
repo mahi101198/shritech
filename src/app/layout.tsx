@@ -8,6 +8,8 @@ import LocalBusinessSchema from '@/components/common/LocalBusinessSchema'
 import EnhancedSEO from '@/components/common/EnhancedSEO'
 import TwitterCardOptimizer from '@/components/common/TwitterCardOptimizer'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { ContactModalProvider } from '@/contexts/ContactModalContext'
+import ContactFormModal from '@/components/contact/ContactFormModal'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +17,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   metadataBase: new URL("https://shritech.digital"),
   title: {
-    default: 'AI/ML Developer India - Shriram Tech Solutions',
+    default: 'Shriram Tech Solutions',
     template: '%s | Shriram Tech'
   },
   description:
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://shritech.digital',
     siteName: 'Shriram Tech Solutions',
-    title: 'AI/ML Developer India - Shriram Tech Solutions',
+    title: 'Shriram Tech Solutions',
     description:
       'Expert AI/ML developer with 5+ years experience. WhatsApp Business API, chatbots, FastAPI, Python & Next.js. Reduce costs 70%, improve efficiency. Free consultation.',
     images: [
@@ -68,7 +70,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI/ML Developer India - Shriram Tech Solutions',
+    title: 'Shriram Tech Solutions',
     description:
       'Expert AI/ML developer with 5+ years experience. WhatsApp Business API, chatbots, FastAPI, Python & Next.js. Reduce costs 70%, improve efficiency.',
     images: ['/og-image.svg'],
@@ -112,11 +114,13 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeProvider>
-          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID || "G-EJBKR606DM"} />
-          <SchemaMarkup />
-          <FAQSchema />
-          <LocalBusinessSchema />
-          {children}
+          <ContactModalProvider>
+            <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID || "G-EJBKR606DM"} />
+            <SchemaMarkup />
+            <FAQSchema />
+            <LocalBusinessSchema />
+            {children}
+          </ContactModalProvider>
         </ThemeProvider>
       </body>
     </html>

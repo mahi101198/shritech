@@ -50,6 +50,10 @@ Thumbs.db
 logs
 *.log
 
+# Database/Storage (local development)
+/data/
+*.json.backup
+
 
 # package-lock.json  # Uncomment this only if using yarn or pnpm exclusively
 yarn.lock

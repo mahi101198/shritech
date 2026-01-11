@@ -230,21 +230,22 @@ function AIStartupHero({
             </div>
 
             {/* Content */}
-            <div className="relative z-10 container mx-auto px-4 py-12 sm:py-20 lg:py-24">
+            <div className="relative z-10 w-full mx-auto px-4 sm:px-6 pt-20 pb-8 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24 max-w-[100vw] overflow-x-hidden">
                 {/* Hero Section */}
-                <div className="max-w-7xl mx-auto text-center"> {/* Centered layout often looks better with many cards, or keep left? User didn't specify, keeping structure but widening container */}
+                <div className="w-full max-w-7xl mx-auto"> 
 
-                    <div className="max-w-4xl mx-auto mb-16 text-left"> {/* Keeping left align for text as per original design */}
+                    <div className="w-full max-w-4xl mx-auto mb-8 sm:mb-16"> 
                         {/* Main Heading */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1 }}
-                            className="text-left mb-6"
+                            className="mb-4 sm:mb-6"
                         >
-                            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+                            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight break-words">
                                 Build <span className="text-primary">Custom</span>
-                                <span className="inline-block w-[340px] sm:w-[400px] pl-3 text-left">
+                                <br className="sm:hidden" />
+                                <span className="inline-block w-full sm:w-[340px] md:w-[400px] sm:pl-3">
                                     <AnimatePresence mode="wait">
                                         <motion.span
                                             key={words[currentWord]}
@@ -258,7 +259,7 @@ function AIStartupHero({
                                         </motion.span>
                                     </AnimatePresence>
                                 </span>
-                                <br className="hidden sm:block" />
+                                <br />
                                 for Your Business
                             </h1>
                         </motion.div>
@@ -268,12 +269,28 @@ function AIStartupHero({
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.4 }}
-                            className="text-xl text-muted-foreground text-left max-w-3xl mb-12"
+                            className="text-base sm:text-xl text-muted-foreground max-w-3xl mb-8 sm:mb-12 break-words"
                         >
                             {description}
                         </motion.p>
 
                         {/* CTA Buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.6 }}
+                            className="flex flex-col sm:flex-row gap-4 items-start sm:items-center"
+                        >
+                            <HoverBorderGradient
+                                containerClassName="w-full sm:w-auto rounded-full"
+                                as="button"
+                                onClick={onCtaClick}
+                                className="w-full sm:w-auto px-8 py-4 text-lg font-semibold flex items-center justify-center gap-2"
+                            >
+                                Get Started
+                                <ArrowRight className="w-5 h-5" />
+                            </HoverBorderGradient>
+                        </motion.div>
 
                     </div>
 
